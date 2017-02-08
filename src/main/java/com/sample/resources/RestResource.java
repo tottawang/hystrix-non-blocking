@@ -18,9 +18,11 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.netflix.config.ConfigurationManager;
 import com.sample.conf.HttpWebClient;
 import com.sample.service.HystrixService;
+
+import rx.Observable;
+import rx.Observer;
 
 @Component
 @Produces(MediaType.APPLICATION_JSON)
@@ -37,21 +39,40 @@ public class RestResource {
   private HttpWebClient httpWebClient;
 
   @GET
-  @Path("hystrix-setting")
-  public Object getSettings() {
-    return ConfigurationManager.getConfigInstance()
-        .getProperty(httpWebClient.getHystrixPoolMaxQueueKey());
-  }
-
-  @GET
   @Path("hystrix-blocking")
-  public String getUserProjects() {
+  public String getUserProjectsBlocking() {
     String result = "";
     long start = System.currentTimeMillis();
     result = service.getContent();
     long end = System.currentTimeMillis();
     System.out.println("Time taken to get results " + (end - start) + " milliseconds");
     return result;
+  }
+
+  @GET
+  @Path("hystrix-non-blocking")
+  public String getUserProjectsNonBlocking() {
+    long start = System.currentTimeMillis();
+    Observable<String> observableResult = service.getContentNonBlocking();
+    observableResult.subscribe(new Observer<String>() {
+      @Override
+      public void onCompleted() {
+        System.out.println(Thread.currentThread().getName() + ": " + "completed");
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        System.out.println(Thread.currentThread().getName() + ": error: " + e.getMessage());
+      }
+
+      @Override
+      public void onNext(String t) {
+        System.out.println(Thread.currentThread().getName() + ": " + "completed");
+      }
+    });
+    long end = System.currentTimeMillis();
+    System.out.println("Time taken to get results " + (end - start) + " milliseconds");
+    return observableResult.toString();
   }
 
   @GET

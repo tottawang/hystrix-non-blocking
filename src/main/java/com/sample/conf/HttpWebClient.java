@@ -12,6 +12,7 @@ public class HttpWebClient {
 
   public static final String GROUP = "HttpWebClient";
   public static final String COMMAND_GET = "HttpWebClient-Get";
+  public static final String COMMAND_NON_BLOCKING_GET = "HttpWebClient-NonBlocking-Get";
   public static final String THREAD_POOL_KEY = "HttpWebClientPool";
   public static final String CONFIG_CORE_SIZE = "hystrix.threadpool.%s.coreSize";
   public static final String CONFIG_MAX_QUEUE_SIZE = "hystrix.threadpool.%s.maxQueueSize";
@@ -33,6 +34,7 @@ public class HttpWebClient {
         hystrixProperties.getQueueRejectionThreshold());
 
     setHystrixCommandConfig(COMMAND_GET);
+    setHystrixCommandConfig(COMMAND_NON_BLOCKING_GET);
   }
 
   private void setHystrixCommandConfig(String commandKey) {
