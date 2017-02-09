@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.sample.conf.HttpWebClient;
 import com.sample.service.HystrixService;
 
 import rx.Observable;
@@ -29,14 +28,11 @@ import rx.Observer;
 @Path("/api")
 public class RestResource {
 
-  private static int POOL_SIZE = 1;
+  private static int POOL_SIZE = 5;
   private static final ExecutorService workers = Executors.newFixedThreadPool(POOL_SIZE);
 
   @Autowired
   private HystrixService service;
-
-  @Autowired
-  private HttpWebClient httpWebClient;
 
   @GET
   @Path("hystrix-blocking")
@@ -47,6 +43,27 @@ public class RestResource {
     long end = System.currentTimeMillis();
     System.out.println("Time taken to get results " + (end - start) + " milliseconds");
     return result;
+  }
+
+  @GET
+  @Path("hystrix-blocking-loop")
+  public String getUserProjectsBlockingLoop() {
+    long start = System.currentTimeMillis();
+    for (int i = 0; i < 30; i++) {
+      getUserProjectsBlocking();
+    }
+    long end = System.currentTimeMillis();
+    System.out.println("###LOOP - Time taken to get results " + (end - start) + " milliseconds");
+    return "";
+  }
+
+  @GET
+  @Path("hystrix-non-blocking-loop")
+  public String getUserProjectsNonBlockingLoop() {
+    for (int i = 0; i < 30; i++) {
+      getUserProjectsNonBlocking();
+    }
+    return "";
   }
 
   @GET
@@ -67,7 +84,7 @@ public class RestResource {
 
       @Override
       public void onNext(String t) {
-        System.out.println(Thread.currentThread().getName() + ": " + "completed");
+        // System.out.println(Thread.currentThread().getName() + ": " + "onNext");
       }
     });
     long end = System.currentTimeMillis();

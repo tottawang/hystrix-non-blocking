@@ -11,7 +11,7 @@ public class HystrixProperties {
 
   private Integer timeout = Integer.valueOf(10000);
   private Boolean timeoutEnabled = Boolean.TRUE;
-  private Integer corePool = Integer.valueOf(1);
+  private Integer corePool = Integer.valueOf(3);
   private Integer maxQueue = Integer.valueOf(256);
   private Integer queueRejectionThreshold = Integer.valueOf(256);
 

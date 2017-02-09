@@ -35,6 +35,7 @@ public class HystrixService {
       threadPoolKey = HttpWebClient.THREAD_POOL_KEY,
       ignoreExceptions = {IgnoreRuntimeException.class})
   public String getContent() {
+    System.out.println(Thread.currentThread().getName() + ": " + " blocking started");
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
     HttpEntity<String> entity = new HttpEntity<String>(headers);
@@ -63,6 +64,7 @@ public class HystrixService {
     return new ObservableResult<String>() {
       @Override
       public String invoke() {
+        System.out.println(Thread.currentThread().getName() + ": " + " non blocking started");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
