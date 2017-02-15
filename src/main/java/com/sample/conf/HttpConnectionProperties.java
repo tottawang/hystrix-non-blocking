@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class HttpConnectionProperties {
 
   private Integer connectionRequestTimeout = Integer.valueOf(5000);
-  private Integer maxPerRoute = Integer.valueOf(64);
-  private Integer maxTotalConnections = Integer.valueOf(128);
+  private Integer maxPerRoute = Integer.valueOf(256);
+  private Integer maxTotalConnections = Integer.valueOf(256);
 
   public Integer getConnectionRequestTimeout() {
     return connectionRequestTimeout;

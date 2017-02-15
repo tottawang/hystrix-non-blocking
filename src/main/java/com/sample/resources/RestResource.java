@@ -20,9 +20,6 @@ import org.springframework.stereotype.Component;
 
 import com.sample.service.HystrixService;
 
-import rx.Observable;
-import rx.Observer;
-
 @Component
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/api")
@@ -35,65 +32,17 @@ public class RestResource {
   private HystrixService service;
 
   @GET
-  @Path("hystrix-blocking")
-  public String getUserProjectsBlocking() {
-    String result = "";
-    long start = System.currentTimeMillis();
-    result = service.getContent();
-    long end = System.currentTimeMillis();
-    System.out.println("Time taken to get results " + (end - start) + " milliseconds");
-    return result;
-  }
-
-  @GET
-  @Path("hystrix-blocking-loop")
-  public String getUserProjectsBlockingLoop() {
-    long start = System.currentTimeMillis();
-    for (int i = 0; i < 30; i++) {
-      getUserProjectsBlocking();
-    }
-    long end = System.currentTimeMillis();
-    System.out.println("###LOOP - Time taken to get results " + (end - start) + " milliseconds");
-    return "";
-  }
-
-  @GET
-  @Path("hystrix-non-blocking-loop")
-  public String getUserProjectsNonBlockingLoop() {
-    for (int i = 0; i < 30; i++) {
-      getUserProjectsNonBlocking();
-    }
-    return "";
-  }
-
-  @GET
   @Path("hystrix-non-blocking")
   public String getUserProjectsNonBlocking() {
     long start = System.currentTimeMillis();
-    Observable<String> observableResult = service.getContentNonBlocking();
-    observableResult.subscribe(new Observer<String>() {
-      @Override
-      public void onCompleted() {
-        System.out.println(Thread.currentThread().getName() + ": " + "completed");
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        System.out.println(Thread.currentThread().getName() + ": error: " + e.getMessage());
-      }
-
-      @Override
-      public void onNext(String t) {
-        // System.out.println(Thread.currentThread().getName() + ": " + "onNext");
-      }
-    });
+    service.wrapPublish();
     long end = System.currentTimeMillis();
     System.out.println("Time taken to get results " + (end - start) + " milliseconds");
-    return observableResult.toString();
+    return "";
   }
 
   @GET
-  @Path("hystrix-blocking-currency")
+  @Path("hystrix-non-blocking-currency")
   public String getUserProjectsCurrency() throws InterruptedException, ExecutionException {
 
     String result = "";
@@ -104,7 +53,8 @@ public class RestResource {
     for (int i = 0; i < POOL_SIZE; i++) {
       tasks.add(new Callable<String>() {
         public String call() throws Exception {
-          return service.getContent();
+          service.wrapPublish();
+          return "";
         }
       });
     }

@@ -9,9 +9,9 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 @ConfigurationProperties(prefix = "hystrix", ignoreUnknownFields = true)
 public class HystrixProperties {
 
-  private Integer timeout = Integer.valueOf(10000);
+  private Integer timeout = Integer.valueOf(30000);
   private Boolean timeoutEnabled = Boolean.TRUE;
-  private Integer corePool = Integer.valueOf(3);
+  private Integer corePool = Integer.valueOf(16);
   private Integer maxQueue = Integer.valueOf(256);
   private Integer queueRejectionThreshold = Integer.valueOf(256);
 
