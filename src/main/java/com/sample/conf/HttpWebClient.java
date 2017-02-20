@@ -32,9 +32,6 @@ public class HttpWebClient {
     setHystrixConfigProperty(getHystrixPoolMaxQueueKey(), hystrixProperties.getMaxQueue());
     setHystrixConfigProperty(getHystrixPoolQueueSizeRejectionThresholdKey(),
         hystrixProperties.getQueueRejectionThreshold());
-
-    setHystrixCommandConfig(COMMAND_GET);
-    setHystrixCommandConfig(COMMAND_NON_BLOCKING_GET);
   }
 
   private void setHystrixCommandConfig(String commandKey) {
