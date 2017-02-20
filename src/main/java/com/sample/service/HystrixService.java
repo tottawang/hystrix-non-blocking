@@ -27,10 +27,6 @@ import com.sample.conf.HttpWebClient;
 import rx.Observable;
 import rx.Observer;
 
-/**
- * @author wangtox260
- *
- */
 @Component
 public class HystrixService {
 
