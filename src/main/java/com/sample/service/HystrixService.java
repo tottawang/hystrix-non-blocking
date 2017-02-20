@@ -30,7 +30,7 @@ import rx.Observer;
 @Component
 public class HystrixService {
 
-  private Setter cachedCommandSetter;
+  private Setter cachedSetter;
 
   @Value("${HYSTRIX_TEST_URL:url_not_accessiable}")
   private String HYSTRIX_TEST_URL;
@@ -44,7 +44,7 @@ public class HystrixService {
 
   @PostConstruct
   private void init() {
-    cachedCommandSetter = com.netflix.hystrix.HystrixCommand.Setter
+    cachedSetter = com.netflix.hystrix.HystrixCommand.Setter
         .withGroupKey(HystrixCommandGroupKey.Factory.asKey(HttpWebClient.GROUP))
         .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(HttpWebClient.THREAD_POOL_KEY))
         .andCommandKey(HystrixCommandKey.Factory.asKey(HttpWebClient.COMMAND_NON_BLOCKING_GET))
@@ -83,7 +83,7 @@ public class HystrixService {
     private final String payload;
 
     public PublishCommand(String payload) {
-      super(cachedCommandSetter);
+      super(cachedSetter);
       this.payload = payload;
     }
 
